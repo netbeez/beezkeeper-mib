@@ -1,0 +1,488 @@
+-- *****************************************************************
+-- NETBEEZ-BEEZKEEPER-MIB
+--  NetBeez SNMP traps MIB
+--
+-- April, 2017 Stefano Gridelli, Panickos Neophytou, Joshua Sarver
+--     Revised July 19, 2017 (3.1)
+--     Revised September 20, 2017 (3.2)
+--     Revised November 8, 2017 (3.3)
+--
+-- Copyright (c) 2017 by Netbeez, Inc.
+-- All rights reserved.
+-- *****************************************************************
+
+NETBEEZ-BEEZKEEPER-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	MODULE-IDENTITY, enterprises, 
+	OBJECT-TYPE, NOTIFICATION-TYPE, Integer32,
+	Counter64
+		FROM SNMPv2-SMI
+    OBJECT-GROUP, NOTIFICATION-GROUP
+        FROM SNMPv2-CONF;
+
+netbeez	MODULE-IDENTITY
+		LAST-UPDATED "201704200000Z"
+		ORGANIZATION "NetBeez, Inc."
+		CONTACT-INFO
+			"NetBeez, Inc.
+			netbeez.net
+
+			Postal: NetBeez, Inc.
+			5124B Penn Avenue
+			Pittsburgh, PA 15224
+			USA
+
+			Phone:	+1 844-NET-BEEZ
+			EMail:	support@netbeez.net"
+
+		DESCRIPTION
+			"This MIB contains definition of the SNMP Traps
+			associated to alerts sent by the NetBeez BeezKeeper"
+
+		REVISION
+			"201704200000Z"
+
+		DESCRIPTION
+			"First revision that includes only the alerts subtree"
+
+	::= { enterprises 44523 }
+
+beezKeeperMIB	OBJECT IDENTIFIER ::= { netbeez 1 }
+
+-- groups in BeezKeeperMIB
+
+nbAlerts		OBJECT IDENTIFIER ::= { beezKeeperMIB 1 }
+
+nbAlertNotifications    OBJECT IDENTIFIER ::= { beezKeeperMIB 0 }
+
+nbGroups OBJECT IDENTIFIER ::= { beezKeeperMIB 2 }
+
+nbIncidents OBJECT IDENTIFIER ::= { beezKeeperMIB 4 }
+
+nbIncidentNotifications OBJECT IDENTIFIER ::= { beezKeeperMIB 4 }
+
+-- Groups of objects
+beezAlertStatusGroup OBJECT-GROUP
+    OBJECTS { beezAlertID, beezAlertType, beezSourceAlertID, beezAlertTimestamp, beezName, beezID, beezAlertMessage, beezAlertSeverity }
+    STATUS  current
+    DESCRIPTION
+            "A collection of objects providing basic instrumentation and
+            control of an SNMPv2 entity."
+    ::= { nbGroups 1 }
+
+testAlertStatusGroup OBJECT-GROUP
+    OBJECTS { testAlertID, testType, testAlertSeverity, testSourceAlertID, testAlertTimestamp, testBeezName, testBeezID, testTargetName, testAlertMessage, testTargetDisplayName }
+    STATUS  current
+    DESCRIPTION
+            "A collection of objects providing basic instrumentation and
+            control of an SNMPv2 entity."
+    ::= { nbGroups 2 }
+
+nbAlertNotificationsGroup NOTIFICATION-GROUP
+    NOTIFICATIONS { beezAlertNotification, testAlertNotification }
+    STATUS        current
+    DESCRIPTION
+       "The basic notifications implemented by an SNMP entity
+        supporting command responder applications."
+    ::= { nbGroups 3 }
+
+nbIncidentEventGroup OBJECT-GROUP
+    OBJECTS { 	incidentEventID,
+        incidentID,
+        incidentEventMessage,
+        incidentEventTimestamp,
+        incidentSourceObjectType,
+        incidentSourceObjectID,
+        incidentEventType
+    }
+    STATUS  current
+    DESCRIPTION
+            "A collection of objects providing basic instrumentation and
+            control of an SNMPv2 entity for Incidents."
+    ::= { nbGroups 4 }
+
+nbIncidentNotificationsGroup NOTIFICATION-GROUP
+    NOTIFICATIONS   { incidentEventNotification }
+    STATUS          current
+    DESCRIPTION
+        "This notification group includes the event notifications that the BeezKeeper produces in regards to incidents
+        triggered on the Agents or the Targets."
+    ::= { nbGroups 5 }
+
+
+-- objects
+
+beezAlerts	OBJECT IDENTIFIER ::= { nbAlerts 1 }
+testAlerts	OBJECT IDENTIFIER ::= { nbAlerts 2 }
+
+beezStatusAlertTable	OBJECT-TYPE
+	SYNTAX		SEQUENCE OF BeezStatusAlertEntry
+	MAX-ACCESS	not-accessible
+	STATUS		current
+	DESCRIPTION
+	  "This is the data structure associated to
+	  alerts triggered by the NetBeez BeezKeeper."
+	::= { beezAlerts 1 }
+
+beezStatusAlertEntry	OBJECT-TYPE
+	SYNTAX		BeezStatusAlertEntry
+	MAX-ACCESS	not-accessible
+	STATUS		current
+	DESCRIPTION
+	  "This is the data structure associated to
+	  alerts triggered by the NetBeez BeezKeeper."
+	INDEX	{ beezAlertID }
+	::= { beezStatusAlertTable 1 }
+
+BeezStatusAlertEntry	::= SEQUENCE	{
+	beezAlertID		INTEGER,
+	beezAlertType		INTEGER,
+	beezAlertSeverity INTEGER,
+	beezSourceAlertID	INTEGER,
+	beezAlertTimestamp	OCTET STRING,
+	beezName		OCTET STRING,
+	beezID			INTEGER,
+	beezAlertMessage	OCTET STRING
+	}
+
+beezAlertID	OBJECT-TYPE
+	SYNTAX		INTEGER
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The alert ID of the alert being sent; this
+	  number can be used to correlate cleared alerts
+	  with raised ones."
+	::= { beezStatusAlertEntry 1 }
+
+beezAlertType	OBJECT-TYPE
+	SYNTAX		INTEGER {
+		beezReachabilityAlert (1),
+		beez80211 (2)
+	}
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The alert ID of the alert being sent; this
+	  number can be used to correlate cleared alerts
+	  with raised ones."
+	::= { beezStatusAlertEntry 2 }
+
+beezAlertSeverity	OBJECT-TYPE
+	SYNTAX		INTEGER {
+		statusDown (1),
+		statusUp (6)
+	}
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The alert ID of the alert being sent; this
+	  number can be used to correlate cleared alerts
+	  with raised ones."
+	::= { beezStatusAlertEntry 8 }
+
+beezSourceAlertID	OBJECT-TYPE
+	SYNTAX		INTEGER
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "If applicable, the ID of the alert originally
+	  raised."
+	::= { beezStatusAlertEntry 3 }
+
+beezAlertTimestamp	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The time stamp, expressed in UNIX epoch (in milliseconds), when the
+	  alert was triggered."
+	::= { beezStatusAlertEntry 4 }
+
+beezName	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The name of the beez that has triggered the
+	  alert."
+	::= { beezStatusAlertEntry 5 }
+
+beezID	OBJECT-TYPE
+	SYNTAX		INTEGER
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The ID of the beez that has triggered the
+	  alert."
+	::= { beezStatusAlertEntry 6 }
+
+beezAlertMessage	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The actual message that describe the type of alert
+	  raised or cleared."
+	::= { beezStatusAlertEntry 7 }
+
+--- TESTS alerts
+
+testStatusAlertTable	OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TestStatusAlertEntry
+	MAX-ACCESS	not-accessible
+	STATUS		current
+	DESCRIPTION
+	  "This is the data structure associated to
+	  alerts triggered by the NetBeez BeezKeeper."
+	::= { testAlerts 1 }
+
+testStatusAlertEntry	OBJECT-TYPE
+	SYNTAX		TestStatusAlertEntry
+	MAX-ACCESS	not-accessible
+	STATUS		current
+	DESCRIPTION
+	  "This is the data structure associated to
+	  alerts triggered by the NetBeez BeezKeeper."
+	INDEX	{ testAlertID }
+	::= { testStatusAlertTable 1 }
+
+TestStatusAlertEntry	::= SEQUENCE	{
+	testAlertID		INTEGER,
+	testType		INTEGER,
+	testAlertSeverity	INTEGER,
+	testSourceAlertID	INTEGER,
+	testAlertTimestamp	OCTET STRING,
+	testBeezName		OCTET STRING,
+	testBeezID		INTEGER,
+	testTargetName		OCTET STRING,
+	testAlertMessage	OCTET STRING,
+	testTargetDisplayName  OCTET STRING
+	}
+
+testAlertID	OBJECT-TYPE
+	SYNTAX		INTEGER
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The alert ID of the alert being sent; this
+	  number can be used to correlate cleared alerts
+	  with raised ones."
+	::= { testStatusAlertEntry 1 }
+
+testType	OBJECT-TYPE
+	SYNTAX		INTEGER {
+		pingTest (1),
+		dnsTest (2),
+		httpTest (3),
+		tracerouteTest (4)
+	}
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The ID of the test type being sent."
+	::= { testStatusAlertEntry 2 }
+
+testAlertSeverity		OBJECT-TYPE
+	SYNTAX		INTEGER {
+		testAlertDown (1),
+		testAlertPerformance (4),
+		testAlertCleared (6)
+	}
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The alert ID of the alert being sent; this
+	  number can be used to correlate cleared alerts
+	  with raised ones."
+	::= { testStatusAlertEntry 3 }
+
+testSourceAlertID	OBJECT-TYPE
+	SYNTAX		INTEGER
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "If applicable, the ID of the alert originally
+	  raised."
+	::= { testStatusAlertEntry 4 }
+
+testAlertTimestamp	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The time stamp, expressed in epoch, when the
+	  alert was triggered."
+	::= { testStatusAlertEntry 5 }
+
+testBeezName	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The name of the beez that has triggered the
+	  alert."
+	::= { testStatusAlertEntry 6 }
+
+testBeezID	OBJECT-TYPE
+	SYNTAX		INTEGER
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The ID of the beez that has triggered the
+	  alert."
+	::= { testStatusAlertEntry 7 }
+
+testTargetName	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "If applicable, the name of the destination of the test
+	  that has triggered the alert."
+	::= { testStatusAlertEntry 8 }
+
+testAlertMessage	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The actual message that describe the type of alert
+	  raised or cleared."
+	::= { testStatusAlertEntry 9 }
+
+testTargetDisplayName	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "If applicable, the display name of the destination of the test
+	  that has triggered the alert, as it appear on the dashboard."
+	::= { testStatusAlertEntry 10 }
+
+-- Incident Event Object-Types
+
+incidentEvents   OBJECT IDENTIFIER ::= { nbIncidents 1 }
+
+incidentEventsTable	OBJECT-TYPE
+	SYNTAX		SEQUENCE OF IncidentEventEntry
+	MAX-ACCESS	not-accessible
+	STATUS		current
+	DESCRIPTION
+	  "This is the data structure associated to
+	  alerts triggered by the NetBeez BeezKeeper."
+	::= { incidentEvents 1 }
+
+incidentEventEntry	OBJECT-TYPE
+	SYNTAX		IncidentEventEntry
+	MAX-ACCESS	not-accessible
+	STATUS		current
+	DESCRIPTION
+	  "This is the data structure associated to incidents triggered by the NetBeez BeezKeeper. Each entry here
+	  corresponds to an event related to an incident"
+	INDEX	{ incidentEventID }
+	::= { incidentEventsTable 1 }
+
+IncidentEventEntry	::= SEQUENCE	{
+	incidentEventID		OCTET STRING,
+	incidentID		    INTEGER,
+	incidentEventMessage	OCTET STRING,
+	incidentEventTimestamp	OCTET STRING,
+	incidentSourceObjectType    OCTET STRING,
+	incidentSourceObjectID		INTEGER,
+	incidentEventType		    OCTET STRING
+}
+
+
+incidentEventID	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	    "The incident message ID ."
+	::= { incidentEventEntry 1 }
+
+incidentID      OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION
+        "The incident ID that a message is reporting on."
+    ::= { incidentEventEntry 2 }
+
+incidentEventMessage	OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	    "The message ID ."
+	::= { incidentEventEntry 3 }
+
+incidentEventTimestamp	OBJECT-TYPE
+    SYNTAX      OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION
+        "The incident event timestamp."
+    ::= { incidentEventEntry 4 }
+
+incidentSourceObjectType	OBJECT-TYPE
+    SYNTAX      OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION
+        "The incident's source object type."
+    ::= { incidentEventEntry 5 }
+
+incidentSourceObjectID	OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION
+        "The incident's source object ID."
+    ::= { incidentEventEntry 6 }
+
+incidentEventType	OBJECT-TYPE
+	SYNTAX	    OCTET STRING {
+        "INCIDENT_OPEN",
+        "INCIDENT_CLOSED"
+    }
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION
+        "The type of the event reported."
+    ::= { incidentEventEntry 7 }
+
+
+-- Notification types:
+
+beezAlertNotification NOTIFICATION-TYPE
+     OBJECTS { beezAlertID, beezAlertType, beezSourceAlertID, beezAlertTimestamp, beezName, beezID, beezAlertMessage, beezAlertSeverity }
+     STATUS       current
+     DESCRIPTION
+         "A notification about a change in the alert status of a beez agent."
+     ::= { nbAlertNotifications 1 }
+
+testAlertNotification NOTIFICATION-TYPE
+     OBJECTS { testAlertID, testType, testAlertSeverity, testSourceAlertID, testAlertTimestamp, testBeezName, testBeezID, testTargetName, testAlertMessage, testTargetDisplayName }
+     STATUS       current
+     DESCRIPTION
+         "A notification about a change in the alert status of a monitoring test."
+     ::= { nbAlertNotifications 2 }
+
+incidentEventNotification NOTIFICATION-TYPE
+    OBJECTS { 	incidentEventID,
+              	incidentID,
+              	incidentEventMessage,
+              	incidentEventTimestamp,
+              	incidentSourceObjectType,
+              	incidentSourceObjectID,
+              	incidentEventType }
+    STATUS      current
+    DESCRIPTION
+        "A notification about the change of status of an incident. Either triggered or cleared"
+    ::= { nbIncidentNotifications 1 }
+
+
+END
