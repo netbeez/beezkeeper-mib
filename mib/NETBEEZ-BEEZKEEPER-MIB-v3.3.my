@@ -60,7 +60,7 @@ nbGroups OBJECT IDENTIFIER ::= { beezKeeperMIB 2 }
 
 nbIncidents OBJECT IDENTIFIER ::= { beezKeeperMIB 4 }
 
-nbIncidentNotifications OBJECT IDENTIFIER ::= { beezKeeperMIB 4 }
+nbIncidentNotifications OBJECT IDENTIFIER ::= { beezKeeperMIB 5 }
 
 -- Groups of objects
 beezAlertStatusGroup OBJECT-GROUP
@@ -136,7 +136,7 @@ beezStatusAlertEntry	OBJECT-TYPE
 	::= { beezStatusAlertTable 1 }
 
 BeezStatusAlertEntry	::= SEQUENCE	{
-	beezAlertID		INTEGER,
+	beezAlertID		Integer32,
 	beezAlertType		INTEGER,
 	beezAlertSeverity INTEGER,
 	beezSourceAlertID	INTEGER,
@@ -147,7 +147,7 @@ BeezStatusAlertEntry	::= SEQUENCE	{
 	}
 
 beezAlertID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		Integer32(0..2147483647)
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
@@ -249,7 +249,7 @@ testStatusAlertEntry	OBJECT-TYPE
 	::= { testStatusAlertTable 1 }
 
 TestStatusAlertEntry	::= SEQUENCE	{
-	testAlertID		INTEGER,
+	testAlertID		Integer32,
 	testType		INTEGER,
 	testAlertSeverity	INTEGER,
 	testSourceAlertID	INTEGER,
@@ -262,7 +262,7 @@ TestStatusAlertEntry	::= SEQUENCE	{
 	}
 
 testAlertID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		Integer32(0..2147483647)
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
@@ -396,7 +396,7 @@ IncidentEventEntry	::= SEQUENCE	{
 
 
 incidentEventID	OBJECT-TYPE
-	SYNTAX		OCTET STRING
+	SYNTAX		OCTET STRING (SIZE (0..255))
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
@@ -444,10 +444,7 @@ incidentSourceObjectID	OBJECT-TYPE
     ::= { incidentEventEntry 6 }
 
 incidentEventType	OBJECT-TYPE
-	SYNTAX	    OCTET STRING {
-        "INCIDENT_OPEN",
-        "INCIDENT_CLOSED"
-    }
+	SYNTAX	    OCTET STRING
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
