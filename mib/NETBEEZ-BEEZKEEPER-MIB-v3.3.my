@@ -94,6 +94,7 @@ nbIncidentEventGroup OBJECT-GROUP
         incidentEventTimestamp,
         incidentSourceObjectType,
         incidentSourceObjectID,
+        incidentSourceObjectName,
         incidentEventType
     }
     STATUS  current
@@ -391,6 +392,7 @@ IncidentEventEntry	::= SEQUENCE	{
 	incidentEventTimestamp	OCTET STRING,
 	incidentSourceObjectType    OCTET STRING,
 	incidentSourceObjectID		INTEGER,
+	incidentSourceObjectName    OCTET STRING,
 	incidentEventType		    OCTET STRING
 }
 
@@ -443,13 +445,21 @@ incidentSourceObjectID	OBJECT-TYPE
         "The incident's source object ID."
     ::= { incidentEventEntry 6 }
 
+incidentSourceObjectName	OBJECT-TYPE
+    SYNTAX      OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION
+        "The incident's source object name as displayed on the dashboard."
+    ::= { incidentEventEntry 7 }
+
 incidentEventType	OBJECT-TYPE
 	SYNTAX	    OCTET STRING
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
         "The type of the event reported."
-    ::= { incidentEventEntry 7 }
+    ::= { incidentEventEntry 8 }
 
 
 -- Notification types:
@@ -462,8 +472,17 @@ beezAlertNotification NOTIFICATION-TYPE
      ::= { nbAlertNotifications 1 }
 
 testAlertNotification NOTIFICATION-TYPE
-     OBJECTS { testAlertID, testType, testAlertSeverity, testSourceAlertID, testAlertTimestamp, testBeezName, testBeezID, testTargetName, testAlertMessage, testTargetDisplayName }
-     STATUS       current
+     OBJECTS { testAlertID,
+               testType,
+               testAlertSeverity,
+               testSourceAlertID,
+               testAlertTimestamp,
+               testBeezName,
+               testBeezID,
+               testTargetName,
+               testAlertMessage,
+               testTargetDisplayName }
+     STATUS    current
      DESCRIPTION
          "A notification about a change in the alert status of a monitoring test."
      ::= { nbAlertNotifications 2 }
@@ -475,6 +494,7 @@ incidentEventNotification NOTIFICATION-TYPE
               	incidentEventTimestamp,
               	incidentSourceObjectType,
               	incidentSourceObjectID,
+              	incidentSourceObjectName,
               	incidentEventType }
     STATUS      current
     DESCRIPTION
