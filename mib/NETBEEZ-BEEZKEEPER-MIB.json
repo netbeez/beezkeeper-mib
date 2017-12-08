@@ -2,30 +2,30 @@
   "imports": {
     "class": "imports",
     "SNMPv2-CONF": [
-      "OBJECT-GROUP",
       "NOTIFICATION-GROUP",
-      "MODULE-COMPLIANCE"
+      "MODULE-COMPLIANCE",
+      "OBJECT-GROUP"
     ],
     "SNMPv2-SMI": [
-      "OBJECT-TYPE",
+      "Integer32",
       "iso",
+      "Counter64",
+      "NOTIFICATION-TYPE",
+      "Counter32",
+      "Gauge32",
+      "Bits",
+      "OBJECT-IDENTITY",
+      "enterprises",
       "IpAddress",
       "MODULE-IDENTITY",
-      "enterprises",
-      "TimeTicks",
-      "NOTIFICATION-TYPE",
       "Unsigned32",
-      "MibIdentifier",
-      "Integer32",
-      "OBJECT-IDENTITY",
-      "Counter64",
-      "Bits",
-      "Gauge32",
-      "Counter32"
+      "OBJECT-TYPE",
+      "TimeTicks",
+      "MibIdentifier"
     ],
     "SNMPv2-TC": [
-      "TEXTUAL-CONVENTION",
-      "DisplayString"
+      "DisplayString",
+      "TEXTUAL-CONVENTION"
     ]
   },
   "netbeez": {
@@ -844,9 +844,9 @@
   "meta": {
     "comments": [
       "ASN.1 source file:///rootfs/beezkeeper/support/submodules/beezkeeper-mib/mib/NETBEEZ-BEEZKEEPER-MIB-v3.3.my",
-      "Produced by pysmi-0.2.2 at Mon Nov 20 21:48:46 2017",
-      "On host 9d9cf0eb575d platform Linux version 3.19.0-25-generic by user nobody",
-      "Using Python version 3.6.3 (default, Nov  3 2017, 23:40:47) "
+      "Produced by pysmi-0.2.2 at Fri Dec  8 19:56:05 2017",
+      "On host 5d2b7565fe07 platform Linux version 3.19.0-25-generic by user nobody",
+      "Using Python version 3.6.3 (default, Dec  4 2017, 16:41:56) "
     ],
     "module": "NETBEEZ-BEEZKEEPER-MIB"
   }
