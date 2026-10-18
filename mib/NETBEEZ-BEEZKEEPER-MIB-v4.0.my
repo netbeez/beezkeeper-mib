@@ -6,23 +6,25 @@
 --     Revised July 19, 2017 (3.1)
 --     Revised September 20, 2017 (3.2)
 --     Revised November 8, 2017 (3.3)
+--     Revised October 18, 2026 (4.0)
 --
--- Copyright (c) 2017 by Netbeez, Inc.
+-- Copyright (c) 2017-2026 by Netbeez, Inc.
 -- All rights reserved.
 -- *****************************************************************
 
 NETBEEZ-BEEZKEEPER-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-	MODULE-IDENTITY, enterprises, 
-	OBJECT-TYPE, NOTIFICATION-TYPE, Integer32,
-	Counter64
+	MODULE-IDENTITY, enterprises,
+	OBJECT-TYPE, NOTIFICATION-TYPE
 		FROM SNMPv2-SMI
     OBJECT-GROUP, NOTIFICATION-GROUP
-        FROM SNMPv2-CONF;
+        FROM SNMPv2-CONF
+    TEXTUAL-CONVENTION
+        FROM SNMPv2-TC;
 
 netbeez	MODULE-IDENTITY
-		LAST-UPDATED "201704200000Z"
+		LAST-UPDATED "202610180000Z"
 		ORGANIZATION "NetBeez, Inc."
 		CONTACT-INFO
 			"NetBeez, Inc.
@@ -39,6 +41,14 @@ netbeez	MODULE-IDENTITY
 		DESCRIPTION
 			"This MIB contains definition of the SNMP Traps
 			associated to alerts sent by the NetBeez BeezKeeper"
+
+		REVISION
+			"202610180000Z"
+
+		DESCRIPTION
+			"Version 4.0. Identifiers of alerts, agents, incidents, and
+			incident source objects are UUID strings. Earlier revisions
+			carried those identifiers as integers."
 
 		REVISION
 			"201704200000Z"
@@ -112,6 +122,26 @@ nbIncidentNotificationsGroup NOTIFICATION-GROUP
     ::= { nbGroups 5 }
 
 
+-- textual conventions
+
+NbUuid ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS      current
+    DESCRIPTION
+        "A universally unique identifier in the canonical 36-character
+        textual form (RFC 9562): eight, four, four, four, then twelve
+        lowercase hexadecimal digits separated by hyphens."
+    SYNTAX      OCTET STRING (SIZE (36))
+
+NbOptionalUuid ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS      current
+    DESCRIPTION
+        "An NbUuid, or a zero-length string when no identifier applies.
+        A zero-length string replaces the integer sentinel previously
+        used when a notification does not reference an earlier alert."
+    SYNTAX      OCTET STRING (SIZE (0 | 36))
+
 -- objects
 
 beezAlerts	OBJECT IDENTIFIER ::= { nbAlerts 1 }
@@ -137,24 +167,23 @@ beezStatusAlertEntry	OBJECT-TYPE
 	::= { beezStatusAlertTable 1 }
 
 BeezStatusAlertEntry	::= SEQUENCE	{
-	beezAlertID		Integer32,
+	beezAlertID		NbUuid,
 	beezAlertType		INTEGER,
 	beezAlertSeverity INTEGER,
-	beezSourceAlertID	INTEGER,
+	beezSourceAlertID	NbOptionalUuid,
 	beezAlertTimestamp	OCTET STRING,
 	beezName		OCTET STRING,
-	beezID			INTEGER,
+	beezID			NbUuid,
 	beezAlertMessage	OCTET STRING
 	}
 
 beezAlertID	OBJECT-TYPE
-	SYNTAX		Integer32(0..2147483647)
+	SYNTAX		NbUuid
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
-	  with raised ones."
+	  "The UUID of the alert being sent. This identifier
+	  correlates a cleared alert with the alert that was raised."
 	::= { beezStatusAlertEntry 1 }
 
 beezAlertType	OBJECT-TYPE
@@ -184,12 +213,13 @@ beezAlertSeverity	OBJECT-TYPE
 	::= { beezStatusAlertEntry 8 }
 
 beezSourceAlertID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		NbOptionalUuid
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "If applicable, the ID of the alert originally
-	  raised."
+	  "If applicable, the UUID of the alert originally
+	  raised. A zero-length string means this notification
+	  is the originally raised alert."
 	::= { beezStatusAlertEntry 3 }
 
 beezAlertTimestamp	OBJECT-TYPE
@@ -211,11 +241,11 @@ beezName	OBJECT-TYPE
 	::= { beezStatusAlertEntry 5 }
 
 beezID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		NbUuid
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The ID of the beez that has triggered the
+	  "The UUID of the beez that has triggered the
 	  alert."
 	::= { beezStatusAlertEntry 6 }
 
@@ -250,26 +280,25 @@ testStatusAlertEntry	OBJECT-TYPE
 	::= { testStatusAlertTable 1 }
 
 TestStatusAlertEntry	::= SEQUENCE	{
-	testAlertID		Integer32,
+	testAlertID		NbUuid,
 	testType		INTEGER,
 	testAlertSeverity	INTEGER,
-	testSourceAlertID	INTEGER,
+	testSourceAlertID	NbOptionalUuid,
 	testAlertTimestamp	OCTET STRING,
 	testBeezName		OCTET STRING,
-	testBeezID		INTEGER,
+	testBeezID		NbUuid,
 	testTargetName		OCTET STRING,
 	testAlertMessage	OCTET STRING,
 	testTargetDisplayName  OCTET STRING
 	}
 
 testAlertID	OBJECT-TYPE
-	SYNTAX		Integer32(0..2147483647)
+	SYNTAX		NbUuid
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
-	  with raised ones."
+	  "The UUID of the alert being sent. This identifier
+	  correlates a cleared alert with the alert that was raised."
 	::= { testStatusAlertEntry 1 }
 
 testType	OBJECT-TYPE
@@ -300,12 +329,13 @@ testAlertSeverity		OBJECT-TYPE
 	::= { testStatusAlertEntry 3 }
 
 testSourceAlertID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		NbOptionalUuid
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "If applicable, the ID of the alert originally
-	  raised."
+	  "If applicable, the UUID of the alert originally
+	  raised. A zero-length string means this notification
+	  is the originally raised alert."
 	::= { testStatusAlertEntry 4 }
 
 testAlertTimestamp	OBJECT-TYPE
@@ -327,11 +357,11 @@ testBeezName	OBJECT-TYPE
 	::= { testStatusAlertEntry 6 }
 
 testBeezID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		NbUuid
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The ID of the beez that has triggered the
+	  "The UUID of the beez that has triggered the
 	  alert."
 	::= { testStatusAlertEntry 7 }
 
@@ -387,11 +417,11 @@ incidentEventEntry	OBJECT-TYPE
 
 IncidentEventEntry	::= SEQUENCE	{
 	incidentEventID		OCTET STRING,
-	incidentID		    INTEGER,
+	incidentID		    NbUuid,
 	incidentEventMessage	OCTET STRING,
 	incidentEventTimestamp	OCTET STRING,
 	incidentSourceObjectType    OCTET STRING,
-	incidentSourceObjectID		INTEGER,
+	incidentSourceObjectID		NbUuid,
 	incidentSourceObjectName    OCTET STRING,
 	incidentEventType		    OCTET STRING
 }
@@ -402,15 +432,16 @@ incidentEventID	OBJECT-TYPE
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	    "The incident message ID ."
+	    "The incident event identifier. Formed as the opening incident
+	    UUID, a hyphen, and the event timestamp in milliseconds."
 	::= { incidentEventEntry 1 }
 
 incidentID      OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      NbUuid
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
-        "The incident ID that a message is reporting on."
+        "The UUID of the incident that a message is reporting on."
     ::= { incidentEventEntry 2 }
 
 incidentEventMessage	OBJECT-TYPE
@@ -438,11 +469,11 @@ incidentSourceObjectType	OBJECT-TYPE
     ::= { incidentEventEntry 5 }
 
 incidentSourceObjectID	OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      NbUuid
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
-        "The incident's source object ID."
+        "The UUID of the incident's source object."
     ::= { incidentEventEntry 6 }
 
 incidentSourceObjectName	OBJECT-TYPE
