@@ -6,23 +6,25 @@
 --     Revised July 19, 2017 (3.1)
 --     Revised September 20, 2017 (3.2)
 --     Revised November 8, 2017 (3.3)
+--     Revised October 18, 2026 (4.0)
 --
--- Copyright (c) 2017 by Netbeez, Inc.
+-- Copyright (c) 2017-2026 by Netbeez, Inc.
 -- All rights reserved.
 -- *****************************************************************
 
 NETBEEZ-BEEZKEEPER-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-	MODULE-IDENTITY, enterprises, 
-	OBJECT-TYPE, NOTIFICATION-TYPE, Integer32,
-	Counter64
+	MODULE-IDENTITY, enterprises,
+	OBJECT-TYPE, NOTIFICATION-TYPE
 		FROM SNMPv2-SMI
+	DateAndTime
+		FROM SNMPv2-TC
     OBJECT-GROUP, NOTIFICATION-GROUP
         FROM SNMPv2-CONF;
 
 netbeez	MODULE-IDENTITY
-		LAST-UPDATED "201704200000Z"
+		LAST-UPDATED "202610180000Z"
 		ORGANIZATION "NetBeez, Inc."
 		CONTACT-INFO
 			"NetBeez, Inc.
@@ -39,6 +41,19 @@ netbeez	MODULE-IDENTITY
 		DESCRIPTION
 			"This MIB contains definition of the SNMP Traps
 			associated to alerts sent by the NetBeez BeezKeeper"
+
+		REVISION
+			"202610180000Z"
+
+		DESCRIPTION
+			"Version 4.0. Identifiers of alerts, agents, incident events,
+			incidents, and incident source objects are UUID strings
+			(OCTET STRING). Incident opening and closing events each have
+			their own event UUID, and incidentID matches the opening
+			incident event's UUID. Timestamps use DateAndTime in UTC
+			(11-octet form). Moved incidentEventNotification under
+			nbAlertNotifications ({ nbAlertNotifications 3 }). Added
+			scheduled and path analysis test types to testType."
 
 		REVISION
 			"201704200000Z"
@@ -137,23 +152,23 @@ beezStatusAlertEntry	OBJECT-TYPE
 	::= { beezStatusAlertTable 1 }
 
 BeezStatusAlertEntry	::= SEQUENCE	{
-	beezAlertID		Integer32,
+	beezAlertID		OCTET STRING,
 	beezAlertType		INTEGER,
 	beezAlertSeverity INTEGER,
-	beezSourceAlertID	INTEGER,
-	beezAlertTimestamp	OCTET STRING,
+	beezSourceAlertID	OCTET STRING,
+	beezAlertTimestamp	DateAndTime,
 	beezName		OCTET STRING,
-	beezID			INTEGER,
+	beezID			OCTET STRING,
 	beezAlertMessage	OCTET STRING
 	}
 
 beezAlertID	OBJECT-TYPE
-	SYNTAX		Integer32(0..2147483647)
+	SYNTAX		OCTET STRING (SIZE (0..255))
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
+	  "The UUID of the alert event being sent; this
+	  identifier can be used to correlate cleared alerts
 	  with raised ones."
 	::= { beezStatusAlertEntry 1 }
 
@@ -165,9 +180,7 @@ beezAlertType	OBJECT-TYPE
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
-	  with raised ones."
+	  "The type of agent alert being sent (reachability or 802.11)."
 	::= { beezStatusAlertEntry 2 }
 
 beezAlertSeverity	OBJECT-TYPE
@@ -178,27 +191,27 @@ beezAlertSeverity	OBJECT-TYPE
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
-	  with raised ones."
+	  "The severity of the agent alert being sent."
 	::= { beezStatusAlertEntry 8 }
 
 beezSourceAlertID	OBJECT-TYPE
-	SYNTAX		INTEGER
-	MAX-ACCESS	read-only
-	STATUS		current
-	DESCRIPTION
-	  "If applicable, the ID of the alert originally
-	  raised."
-	::= { beezStatusAlertEntry 3 }
-
-beezAlertTimestamp	OBJECT-TYPE
 	SYNTAX		OCTET STRING
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The time stamp, expressed in UNIX epoch (in milliseconds), when the
-	  alert was triggered."
+	  "The UUID of the alert event originally raised.
+	  For an opening alert event, this is the same as
+	  beezAlertID."
+	::= { beezStatusAlertEntry 3 }
+
+beezAlertTimestamp	OBJECT-TYPE
+	SYNTAX		DateAndTime
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The UTC time when the alert event occurred, encoded as the
+	  11-octet DateAndTime form (year through UTC offset, with Zulu
+	  direction '+', hours from UTC 0, minutes from UTC 0)."
 	::= { beezStatusAlertEntry 4 }
 
 beezName	OBJECT-TYPE
@@ -211,11 +224,11 @@ beezName	OBJECT-TYPE
 	::= { beezStatusAlertEntry 5 }
 
 beezID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		OCTET STRING
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The ID of the beez that has triggered the
+	  "The UUID of the beez that has triggered the
 	  alert."
 	::= { beezStatusAlertEntry 6 }
 
@@ -250,25 +263,25 @@ testStatusAlertEntry	OBJECT-TYPE
 	::= { testStatusAlertTable 1 }
 
 TestStatusAlertEntry	::= SEQUENCE	{
-	testAlertID		Integer32,
+	testAlertID		OCTET STRING,
 	testType		INTEGER,
 	testAlertSeverity	INTEGER,
-	testSourceAlertID	INTEGER,
-	testAlertTimestamp	OCTET STRING,
+	testSourceAlertID	OCTET STRING,
+	testAlertTimestamp	DateAndTime,
 	testBeezName		OCTET STRING,
-	testBeezID		INTEGER,
+	testBeezID		OCTET STRING,
 	testTargetName		OCTET STRING,
 	testAlertMessage	OCTET STRING,
 	testTargetDisplayName  OCTET STRING
 	}
 
 testAlertID	OBJECT-TYPE
-	SYNTAX		Integer32(0..2147483647)
+	SYNTAX		OCTET STRING (SIZE (0..255))
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
+	  "The UUID of the alert event being sent; this
+	  identifier can be used to correlate cleared alerts
 	  with raised ones."
 	::= { testStatusAlertEntry 1 }
 
@@ -277,7 +290,13 @@ testType	OBJECT-TYPE
 		pingTest (1),
 		dnsTest (2),
 		httpTest (3),
-		tracerouteTest (4)
+		tracerouteTest (4),
+		iperfTest (5),
+		networkSpeedTest (7),
+		voipTest (8),
+		pathAnalysisTest (9),
+		packetCaptureTest (10),
+		customCommandTest (11)
 	}
 	MAX-ACCESS	read-only
 	STATUS		current
@@ -294,27 +313,27 @@ testAlertSeverity		OBJECT-TYPE
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The alert ID of the alert being sent; this
-	  number can be used to correlate cleared alerts
-	  with raised ones."
+	  "The severity of the test alert being sent."
 	::= { testStatusAlertEntry 3 }
 
 testSourceAlertID	OBJECT-TYPE
-	SYNTAX		INTEGER
-	MAX-ACCESS	read-only
-	STATUS		current
-	DESCRIPTION
-	  "If applicable, the ID of the alert originally
-	  raised."
-	::= { testStatusAlertEntry 4 }
-
-testAlertTimestamp	OBJECT-TYPE
 	SYNTAX		OCTET STRING
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The time stamp, expressed in epoch, when the
-	  alert was triggered."
+	  "The UUID of the alert event originally raised.
+	  For an opening alert event, this is the same as
+	  testAlertID."
+	::= { testStatusAlertEntry 4 }
+
+testAlertTimestamp	OBJECT-TYPE
+	SYNTAX		DateAndTime
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+	  "The UTC time when the alert event occurred, encoded as the
+	  11-octet DateAndTime form (year through UTC offset, with Zulu
+	  direction '+', hours from UTC 0, minutes from UTC 0)."
 	::= { testStatusAlertEntry 5 }
 
 testBeezName	OBJECT-TYPE
@@ -327,11 +346,11 @@ testBeezName	OBJECT-TYPE
 	::= { testStatusAlertEntry 6 }
 
 testBeezID	OBJECT-TYPE
-	SYNTAX		INTEGER
+	SYNTAX		OCTET STRING
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	  "The ID of the beez that has triggered the
+	  "The UUID of the beez that has triggered the
 	  alert."
 	::= { testStatusAlertEntry 7 }
 
@@ -387,11 +406,11 @@ incidentEventEntry	OBJECT-TYPE
 
 IncidentEventEntry	::= SEQUENCE	{
 	incidentEventID		OCTET STRING,
-	incidentID		    INTEGER,
+	incidentID		    OCTET STRING,
 	incidentEventMessage	OCTET STRING,
-	incidentEventTimestamp	OCTET STRING,
+	incidentEventTimestamp	DateAndTime,
 	incidentSourceObjectType    OCTET STRING,
-	incidentSourceObjectID		INTEGER,
+	incidentSourceObjectID		OCTET STRING,
 	incidentSourceObjectName    OCTET STRING,
 	incidentEventType		    OCTET STRING
 }
@@ -402,15 +421,15 @@ incidentEventID	OBJECT-TYPE
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	    "The incident message ID ."
+	    "The UUID of the incident event (the opening or closing event ID)."
 	::= { incidentEventEntry 1 }
 
 incidentID      OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      OCTET STRING
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
-        "The incident ID that a message is reporting on."
+        "The UUID of the incident that a message is reporting on (the opening incident event's ID)."
     ::= { incidentEventEntry 2 }
 
 incidentEventMessage	OBJECT-TYPE
@@ -418,15 +437,17 @@ incidentEventMessage	OBJECT-TYPE
 	MAX-ACCESS	read-only
 	STATUS		current
 	DESCRIPTION
-	    "The message ID ."
+	    "The incident message describing the incident event."
 	::= { incidentEventEntry 3 }
 
 incidentEventTimestamp	OBJECT-TYPE
-    SYNTAX      OCTET STRING
+    SYNTAX      DateAndTime
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
-        "The incident event timestamp."
+        "The UTC time when the incident event occurred, encoded as the
+        11-octet DateAndTime form (year through UTC offset, with Zulu
+        direction '+', hours from UTC 0, minutes from UTC 0)."
     ::= { incidentEventEntry 4 }
 
 incidentSourceObjectType	OBJECT-TYPE
@@ -438,11 +459,11 @@ incidentSourceObjectType	OBJECT-TYPE
     ::= { incidentEventEntry 5 }
 
 incidentSourceObjectID	OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      OCTET STRING
     MAX-ACCESS	read-only
     STATUS		current
     DESCRIPTION
-        "The incident's source object ID."
+        "The UUID of the incident's source object."
     ::= { incidentEventEntry 6 }
 
 incidentSourceObjectName	OBJECT-TYPE
@@ -499,7 +520,7 @@ incidentEventNotification NOTIFICATION-TYPE
     STATUS      current
     DESCRIPTION
         "A notification about the change of status of an incident. Either triggered or cleared"
-    ::= { nbIncidentNotifications 1 }
+    ::= { nbAlertNotifications 3 }
 
 
 END
