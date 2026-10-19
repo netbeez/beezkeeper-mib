@@ -1,82 +1,42 @@
 {
-  "imports": {
-    "class": "imports",
-    "SNMPv2-CONF": [
-      "NOTIFICATION-GROUP",
-      "MODULE-COMPLIANCE",
-      "OBJECT-GROUP"
-    ],
-    "SNMPv2-SMI": [
-      "Integer32",
-      "iso",
-      "Counter64",
-      "NOTIFICATION-TYPE",
-      "Counter32",
-      "Gauge32",
-      "Bits",
-      "OBJECT-IDENTITY",
-      "enterprises",
-      "IpAddress",
-      "MODULE-IDENTITY",
-      "Unsigned32",
-      "OBJECT-TYPE",
-      "TimeTicks",
-      "MibIdentifier"
-    ],
-    "SNMPv2-TC": [
-      "DisplayString",
-      "TEXTUAL-CONVENTION"
-    ]
+  "beezAlertID": {
+    "class": "objecttype",
+    "description": "The UUID of the alert event being sent; this identifier can be used to correlate cleared alerts with raised ones.",
+    "maxaccess": "read-only",
+    "name": "beezAlertID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.1",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "max": 255,
+            "min": 0
+          }
+        ]
+      },
+      "type": "OCTET STRING"
+    }
   },
-  "netbeez": {
-    "name": "netbeez",
-    "oid": "1.3.6.1.4.1.44523",
-    "class": "moduleidentity",
-    "revisions": [
-      {
-        "revision": "2017-04-20 00:00",
-        "description": "First revision that includes only the alerts subtree"
-      }
-    ],
-    "lastupdated": "201704200000Z",
-    "organization": "NetBeez, Inc.",
-    "contactinfo": "NetBeez, Inc. netbeez.net Postal: NetBeez, Inc. 5124B Penn Avenue Pittsburgh, PA 15224 USA Phone: +1 844-NET-BEEZ EMail: support@netbeez.net",
-    "description": "This MIB contains definition of the SNMP Traps associated to alerts sent by the NetBeez BeezKeeper"
+  "beezAlertMessage": {
+    "class": "objecttype",
+    "description": "The actual message that describe the type of alert raised or cleared.",
+    "maxaccess": "read-only",
+    "name": "beezAlertMessage",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.7",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
   },
-  "beezKeeperMIB": {
-    "name": "beezKeeperMIB",
-    "oid": "1.3.6.1.4.1.44523.1",
-    "class": "objectidentity"
-  },
-  "nbAlerts": {
-    "name": "nbAlerts",
-    "oid": "1.3.6.1.4.1.44523.1.1",
-    "class": "objectidentity"
-  },
-  "nbAlertNotifications": {
-    "name": "nbAlertNotifications",
-    "oid": "1.3.6.1.4.1.44523.1.0",
-    "class": "objectidentity"
-  },
-  "nbGroups": {
-    "name": "nbGroups",
-    "oid": "1.3.6.1.4.1.44523.1.2",
-    "class": "objectidentity"
-  },
-  "nbIncidents": {
-    "name": "nbIncidents",
-    "oid": "1.3.6.1.4.1.44523.1.4",
-    "class": "objectidentity"
-  },
-  "nbIncidentNotifications": {
-    "name": "nbIncidentNotifications",
-    "oid": "1.3.6.1.4.1.44523.1.5",
-    "class": "objectidentity"
-  },
-  "beezAlertStatusGroup": {
-    "name": "beezAlertStatusGroup",
-    "oid": "1.3.6.1.4.1.44523.1.2.1",
-    "class": "objectgroup",
+  "beezAlertNotification": {
+    "class": "notificationtype",
+    "description": "A notification about a change in the alert status of a beez agent.",
+    "name": "beezAlertNotification",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
@@ -111,62 +71,404 @@
         "object": "beezAlertSeverity"
       }
     ],
-    "status": "current",
-    "description": "A collection of objects providing basic instrumentation and control of an SNMPv2 entity."
+    "oid": "1.3.6.1.4.1.44523.1.0.1",
+    "status": "current"
   },
-  "testAlertStatusGroup": {
-    "name": "testAlertStatusGroup",
-    "oid": "1.3.6.1.4.1.44523.1.2.2",
+  "beezAlertSeverity": {
+    "class": "objecttype",
+    "description": "The severity of the agent alert being sent.",
+    "maxaccess": "read-only",
+    "name": "beezAlertSeverity",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.8",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "statusDown": 1,
+          "statusUp": 6
+        }
+      },
+      "type": "INTEGER"
+    }
+  },
+  "beezAlertStatusGroup": {
     "class": "objectgroup",
+    "description": "A collection of objects providing basic instrumentation and control of an SNMPv2 entity.",
+    "name": "beezAlertStatusGroup",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testAlertID"
+        "object": "beezAlertID"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testType"
+        "object": "beezAlertType"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testAlertSeverity"
+        "object": "beezSourceAlertID"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testSourceAlertID"
+        "object": "beezAlertTimestamp"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testAlertTimestamp"
+        "object": "beezName"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testBeezName"
+        "object": "beezID"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testBeezID"
+        "object": "beezAlertMessage"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testTargetName"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testAlertMessage"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testTargetDisplayName"
+        "object": "beezAlertSeverity"
       }
     ],
+    "oid": "1.3.6.1.4.1.44523.1.2.1",
+    "status": "current"
+  },
+  "beezAlertTimestamp": {
+    "class": "objecttype",
+    "description": "The UTC time when the alert event occurred, encoded as the 11-octet DateAndTime form (year through UTC offset, with Zulu direction \u0027+\u0027, hours from UTC 0, minutes from UTC 0).",
+    "maxaccess": "read-only",
+    "name": "beezAlertTimestamp",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.4",
     "status": "current",
-    "description": "A collection of objects providing basic instrumentation and control of an SNMPv2 entity."
+    "syntax": {
+      "class": "type",
+      "type": "DateAndTime"
+    }
+  },
+  "beezAlertType": {
+    "class": "objecttype",
+    "description": "The type of agent alert being sent (reachability or 802.11).",
+    "maxaccess": "read-only",
+    "name": "beezAlertType",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.2",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "beez80211": 2,
+          "beezReachabilityAlert": 1
+        }
+      },
+      "type": "INTEGER"
+    }
+  },
+  "beezAlerts": {
+    "class": "objectidentity",
+    "name": "beezAlerts",
+    "oid": "1.3.6.1.4.1.44523.1.1.1"
+  },
+  "beezID": {
+    "class": "objecttype",
+    "description": "The UUID of the beez that has triggered the alert.",
+    "maxaccess": "read-only",
+    "name": "beezID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.6",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "beezKeeperMIB": {
+    "class": "objectidentity",
+    "name": "beezKeeperMIB",
+    "oid": "1.3.6.1.4.1.44523.1"
+  },
+  "beezName": {
+    "class": "objecttype",
+    "description": "The name of the beez that has triggered the alert.",
+    "maxaccess": "read-only",
+    "name": "beezName",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.5",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "beezSourceAlertID": {
+    "class": "objecttype",
+    "description": "The UUID of the alert event originally raised. For an opening alert event, this is the same as beezAlertID.",
+    "maxaccess": "read-only",
+    "name": "beezSourceAlertID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.3",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "beezStatusAlertEntry": {
+    "class": "objecttype",
+    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper.",
+    "indices": [
+      {
+        "implied": 0,
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "beezAlertID"
+      }
+    ],
+    "maxaccess": "not-accessible",
+    "name": "beezStatusAlertEntry",
+    "nodetype": "row",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1",
+    "status": "current"
+  },
+  "beezStatusAlertTable": {
+    "class": "objecttype",
+    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper.",
+    "maxaccess": "not-accessible",
+    "name": "beezStatusAlertTable",
+    "nodetype": "table",
+    "oid": "1.3.6.1.4.1.44523.1.1.1.1",
+    "status": "current"
+  },
+  "imports": {
+    "SNMPv2-CONF": [
+      "MODULE-COMPLIANCE",
+      "NOTIFICATION-GROUP",
+      "OBJECT-GROUP"
+    ],
+    "SNMPv2-SMI": [
+      "Bits",
+      "Integer32",
+      "IpAddress",
+      "MODULE-IDENTITY",
+      "MibIdentifier",
+      "NOTIFICATION-TYPE",
+      "OBJECT-IDENTITY",
+      "OBJECT-TYPE",
+      "TimeTicks",
+      "Unsigned32",
+      "enterprises",
+      "iso"
+    ],
+    "SNMPv2-TC": [
+      "DateAndTime",
+      "DisplayString",
+      "PhysAddress",
+      "TEXTUAL-CONVENTION"
+    ],
+    "class": "imports"
+  },
+  "incidentEventEntry": {
+    "class": "objecttype",
+    "description": "This is the data structure associated to incidents triggered by the NetBeez BeezKeeper. Each entry here corresponds to an event related to an incident",
+    "indices": [
+      {
+        "implied": 0,
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentEventID"
+      }
+    ],
+    "maxaccess": "not-accessible",
+    "name": "incidentEventEntry",
+    "nodetype": "row",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1",
+    "status": "current"
+  },
+  "incidentEventID": {
+    "class": "objecttype",
+    "description": "The UUID of the incident event (the opening or closing event ID).",
+    "maxaccess": "read-only",
+    "name": "incidentEventID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.1",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "max": 255,
+            "min": 0
+          }
+        ]
+      },
+      "type": "OCTET STRING"
+    }
+  },
+  "incidentEventMessage": {
+    "class": "objecttype",
+    "description": "The incident message describing the incident event.",
+    "maxaccess": "read-only",
+    "name": "incidentEventMessage",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.3",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "incidentEventNotification": {
+    "class": "notificationtype",
+    "description": "A notification about the change of status of an incident. Either triggered or cleared",
+    "name": "incidentEventNotification",
+    "objects": [
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentEventID"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentID"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentEventMessage"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentEventTimestamp"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentSourceObjectType"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentSourceObjectID"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentSourceObjectName"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "incidentEventType"
+      }
+    ],
+    "oid": "1.3.6.1.4.1.44523.1.0.3",
+    "status": "current"
+  },
+  "incidentEventTimestamp": {
+    "class": "objecttype",
+    "description": "The UTC time when the incident event occurred, encoded as the 11-octet DateAndTime form (year through UTC offset, with Zulu direction \u0027+\u0027, hours from UTC 0, minutes from UTC 0).",
+    "maxaccess": "read-only",
+    "name": "incidentEventTimestamp",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.4",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "DateAndTime"
+    }
+  },
+  "incidentEventType": {
+    "class": "objecttype",
+    "description": "The type of the event reported.",
+    "maxaccess": "read-only",
+    "name": "incidentEventType",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.8",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "incidentEvents": {
+    "class": "objectidentity",
+    "name": "incidentEvents",
+    "oid": "1.3.6.1.4.1.44523.1.4.1"
+  },
+  "incidentEventsTable": {
+    "class": "objecttype",
+    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper.",
+    "maxaccess": "not-accessible",
+    "name": "incidentEventsTable",
+    "nodetype": "table",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1",
+    "status": "current"
+  },
+  "incidentID": {
+    "class": "objecttype",
+    "description": "The UUID of the incident that a message is reporting on (the opening incident event\u0027s ID).",
+    "maxaccess": "read-only",
+    "name": "incidentID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.2",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "incidentSourceObjectID": {
+    "class": "objecttype",
+    "description": "The UUID of the incident\u0027s source object.",
+    "maxaccess": "read-only",
+    "name": "incidentSourceObjectID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.6",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "incidentSourceObjectName": {
+    "class": "objecttype",
+    "description": "The incident\u0027s source object name as displayed on the dashboard.",
+    "maxaccess": "read-only",
+    "name": "incidentSourceObjectName",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.7",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "incidentSourceObjectType": {
+    "class": "objecttype",
+    "description": "The incident\u0027s source object type.",
+    "maxaccess": "read-only",
+    "name": "incidentSourceObjectType",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.5",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "meta": {
+    "comments": [
+      "ASN.1 source file:///Users/panickos/dev/beezkeeper-mib/mib/NETBEEZ-BEEZKEEPER-MIB-v4.0.my",
+      "Produced by pysmi-2.0.0 at Sun Oct 18 19:32:55 2026",
+      "On host panmac23.local platform Darwin version 27.0.0 by user panickos",
+      "Using Python version 3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.3.34.2)]"
+    ],
+    "module": "NETBEEZ-BEEZKEEPER-MIB"
+  },
+  "nbAlertNotifications": {
+    "class": "objectidentity",
+    "name": "nbAlertNotifications",
+    "oid": "1.3.6.1.4.1.44523.1.0"
   },
   "nbAlertNotificationsGroup": {
-    "name": "nbAlertNotificationsGroup",
-    "oid": "1.3.6.1.4.1.44523.1.2.3",
     "class": "notificationgroup",
+    "description": "The basic notifications implemented by an SNMP entity supporting command responder applications.",
+    "name": "nbAlertNotificationsGroup",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
@@ -177,13 +479,23 @@
         "object": "testAlertNotification"
       }
     ],
-    "status": "current",
-    "description": "The basic notifications implemented by an SNMP entity supporting command responder applications."
+    "oid": "1.3.6.1.4.1.44523.1.2.3",
+    "status": "current"
+  },
+  "nbAlerts": {
+    "class": "objectidentity",
+    "name": "nbAlerts",
+    "oid": "1.3.6.1.4.1.44523.1.1"
+  },
+  "nbGroups": {
+    "class": "objectidentity",
+    "name": "nbGroups",
+    "oid": "1.3.6.1.4.1.44523.1.2"
   },
   "nbIncidentEventGroup": {
-    "name": "nbIncidentEventGroup",
-    "oid": "1.3.6.1.4.1.44523.1.2.4",
     "class": "objectgroup",
+    "description": "A collection of objects providing basic instrumentation and control of an SNMPv2 entity for Incidents.",
+    "name": "nbIncidentEventGroup",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
@@ -218,543 +530,89 @@
         "object": "incidentEventType"
       }
     ],
-    "status": "current",
-    "description": "A collection of objects providing basic instrumentation and control of an SNMPv2 entity for Incidents."
+    "oid": "1.3.6.1.4.1.44523.1.2.4",
+    "status": "current"
+  },
+  "nbIncidentNotifications": {
+    "class": "objectidentity",
+    "name": "nbIncidentNotifications",
+    "oid": "1.3.6.1.4.1.44523.1.5"
   },
   "nbIncidentNotificationsGroup": {
-    "name": "nbIncidentNotificationsGroup",
-    "oid": "1.3.6.1.4.1.44523.1.2.5",
     "class": "notificationgroup",
+    "description": "This notification group includes the event notifications that the BeezKeeper produces in regards to incidents triggered on the Agents or the Targets.",
+    "name": "nbIncidentNotificationsGroup",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
         "object": "incidentEventNotification"
       }
     ],
-    "status": "current",
-    "description": "This notification group includes the event notifications that the BeezKeeper produces in regards to incidents triggered on the Agents or the Targets."
+    "oid": "1.3.6.1.4.1.44523.1.2.5",
+    "status": "current"
   },
-  "beezAlerts": {
-    "name": "beezAlerts",
-    "oid": "1.3.6.1.4.1.44523.1.1.1",
-    "class": "objectidentity"
+  "nbIncidents": {
+    "class": "objectidentity",
+    "name": "nbIncidents",
+    "oid": "1.3.6.1.4.1.44523.1.4"
   },
-  "testAlerts": {
-    "name": "testAlerts",
-    "oid": "1.3.6.1.4.1.44523.1.1.2",
-    "class": "objectidentity"
-  },
-  "beezStatusAlertTable": {
-    "name": "beezStatusAlertTable",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1",
-    "nodetype": "table",
-    "class": "objecttype",
-    "maxaccess": "not-accessible",
-    "status": "current",
-    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper."
-  },
-  "beezStatusAlertEntry": {
-    "name": "beezStatusAlertEntry",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1",
-    "nodetype": "row",
-    "class": "objecttype",
-    "maxaccess": "not-accessible",
-    "indices": [
+  "netbeez": {
+    "class": "moduleidentity",
+    "contactinfo": "NetBeez, Inc. netbeez.net Postal: NetBeez, Inc. 5124B Penn Avenue Pittsburgh, PA 15224 USA Phone: +1 844-NET-BEEZ EMail: support@netbeez.net",
+    "description": "This MIB contains definition of the SNMP Traps associated to alerts sent by the NetBeez BeezKeeper",
+    "lastupdated": "202610180000Z",
+    "name": "netbeez",
+    "oid": "1.3.6.1.4.1.44523",
+    "organization": "NetBeez, Inc.",
+    "revisions": [
       {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezAlertID"
-      }
-    ],
-    "status": "current",
-    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper."
-  },
-  "beezAlertID": {
-    "name": "beezAlertID",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.1",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "Integer32",
-      "class": "type",
-      "constraints": {
-        "range": [
-          {
-            "min": 0,
-            "max": 2147483647
-          }
-        ]
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The alert ID of the alert being sent; this number can be used to correlate cleared alerts with raised ones."
-  },
-  "beezAlertType": {
-    "name": "beezAlertType",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.2",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type",
-      "constraints": {
-        "enumeration": {
-          "beezReachabilityAlert": 1,
-          "beez80211": 2
-        }
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The alert ID of the alert being sent; this number can be used to correlate cleared alerts with raised ones."
-  },
-  "beezAlertSeverity": {
-    "name": "beezAlertSeverity",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.8",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type",
-      "constraints": {
-        "enumeration": {
-          "statusDown": 1,
-          "statusUp": 6
-        }
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The alert ID of the alert being sent; this number can be used to correlate cleared alerts with raised ones."
-  },
-  "beezSourceAlertID": {
-    "name": "beezSourceAlertID",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.3",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "If applicable, the ID of the alert originally raised."
-  },
-  "beezAlertTimestamp": {
-    "name": "beezAlertTimestamp",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.4",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The time stamp, expressed in UNIX epoch (in milliseconds), when the alert was triggered."
-  },
-  "beezName": {
-    "name": "beezName",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.5",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The name of the beez that has triggered the alert."
-  },
-  "beezID": {
-    "name": "beezID",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.6",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The ID of the beez that has triggered the alert."
-  },
-  "beezAlertMessage": {
-    "name": "beezAlertMessage",
-    "oid": "1.3.6.1.4.1.44523.1.1.1.1.1.7",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The actual message that describe the type of alert raised or cleared."
-  },
-  "testStatusAlertTable": {
-    "name": "testStatusAlertTable",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1",
-    "nodetype": "table",
-    "class": "objecttype",
-    "maxaccess": "not-accessible",
-    "status": "current",
-    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper."
-  },
-  "testStatusAlertEntry": {
-    "name": "testStatusAlertEntry",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1",
-    "nodetype": "row",
-    "class": "objecttype",
-    "maxaccess": "not-accessible",
-    "indices": [
+        "description": "Version 4.0. Identifiers of alerts, agents, incident events, incidents, and incident source objects are UUID strings (OCTET STRING). Incident opening and closing events each have their own event UUID, and incidentID matches the opening incident event\u0027s UUID. Timestamps use DateAndTime in UTC (11-octet form). Moved incidentEventNotification under nbAlertNotifications ({ nbAlertNotifications 3 }). Added scheduled and path analysis test types to testType.",
+        "revision": "2026-10-18 00:00"
+      },
       {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "testAlertID"
+        "description": "First revision that includes only the alerts subtree",
+        "revision": "2017-04-20 00:00"
       }
-    ],
-    "status": "current",
-    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper."
+    ]
   },
   "testAlertID": {
+    "class": "objecttype",
+    "description": "The UUID of the alert event being sent; this identifier can be used to correlate cleared alerts with raised ones.",
+    "maxaccess": "read-only",
     "name": "testAlertID",
+    "nodetype": "column",
     "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.1",
-    "nodetype": "column",
-    "class": "objecttype",
+    "status": "current",
     "syntax": {
-      "type": "Integer32",
-      "class": "type",
-      "constraints": {
-        "range": [
-          {
-            "min": 0,
-            "max": 2147483647
-          }
-        ]
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The alert ID of the alert being sent; this number can be used to correlate cleared alerts with raised ones."
-  },
-  "testType": {
-    "name": "testType",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.2",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type",
-      "constraints": {
-        "enumeration": {
-          "pingTest": 1,
-          "dnsTest": 2,
-          "httpTest": 3,
-          "tracerouteTest": 4
-        }
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The ID of the test type being sent."
-  },
-  "testAlertSeverity": {
-    "name": "testAlertSeverity",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.3",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type",
-      "constraints": {
-        "enumeration": {
-          "testAlertDown": 1,
-          "testAlertPerformance": 4,
-          "testAlertCleared": 6
-        }
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The alert ID of the alert being sent; this number can be used to correlate cleared alerts with raised ones."
-  },
-  "testSourceAlertID": {
-    "name": "testSourceAlertID",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.4",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "If applicable, the ID of the alert originally raised."
-  },
-  "testAlertTimestamp": {
-    "name": "testAlertTimestamp",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.5",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The time stamp, expressed in epoch, when the alert was triggered."
-  },
-  "testBeezName": {
-    "name": "testBeezName",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.6",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The name of the beez that has triggered the alert."
-  },
-  "testBeezID": {
-    "name": "testBeezID",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.7",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The ID of the beez that has triggered the alert."
-  },
-  "testTargetName": {
-    "name": "testTargetName",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.8",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "If applicable, the name of the destination of the test that has triggered the alert."
-  },
-  "testAlertMessage": {
-    "name": "testAlertMessage",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.9",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The actual message that describe the type of alert raised or cleared."
-  },
-  "testTargetDisplayName": {
-    "name": "testTargetDisplayName",
-    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.10",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "If applicable, the display name of the destination of the test that has triggered the alert, as it appear on the dashboard."
-  },
-  "incidentEvents": {
-    "name": "incidentEvents",
-    "oid": "1.3.6.1.4.1.44523.1.4.1",
-    "class": "objectidentity"
-  },
-  "incidentEventsTable": {
-    "name": "incidentEventsTable",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1",
-    "nodetype": "table",
-    "class": "objecttype",
-    "maxaccess": "not-accessible",
-    "status": "current",
-    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper."
-  },
-  "incidentEventEntry": {
-    "name": "incidentEventEntry",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1",
-    "nodetype": "row",
-    "class": "objecttype",
-    "maxaccess": "not-accessible",
-    "indices": [
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentEventID"
-      }
-    ],
-    "status": "current",
-    "description": "This is the data structure associated to incidents triggered by the NetBeez BeezKeeper. Each entry here corresponds to an event related to an incident"
-  },
-  "incidentEventID": {
-    "name": "incidentEventID",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.1",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
       "class": "type",
       "constraints": {
         "size": [
           {
-            "min": 0,
-            "max": 255
+            "max": 255,
+            "min": 0
           }
         ]
-      }
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The incident message ID ."
-  },
-  "incidentID": {
-    "name": "incidentID",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.2",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The incident ID that a message is reporting on."
-  },
-  "incidentEventMessage": {
-    "name": "incidentEventMessage",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.3",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The message ID ."
-  },
-  "incidentEventTimestamp": {
-    "name": "incidentEventTimestamp",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.4",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The incident event timestamp."
-  },
-  "incidentSourceObjectType": {
-    "name": "incidentSourceObjectType",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.5",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The incident's source object type."
-  },
-  "incidentSourceObjectID": {
-    "name": "incidentSourceObjectID",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.6",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "INTEGER",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The incident's source object ID."
-  },
-  "incidentSourceObjectName": {
-    "name": "incidentSourceObjectName",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.7",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The incident's source object name as displayed on the dashboard."
-  },
-  "incidentEventType": {
-    "name": "incidentEventType",
-    "oid": "1.3.6.1.4.1.44523.1.4.1.1.1.8",
-    "nodetype": "column",
-    "class": "objecttype",
-    "syntax": {
-      "type": "OCTET STRING",
-      "class": "type"
-    },
-    "maxaccess": "read-only",
-    "status": "current",
-    "description": "The type of the event reported."
-  },
-  "beezAlertNotification": {
-    "name": "beezAlertNotification",
-    "oid": "1.3.6.1.4.1.44523.1.0.1",
-    "class": "notificationtype",
-    "objects": [
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezAlertID"
       },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezAlertType"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezSourceAlertID"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezAlertTimestamp"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezName"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezID"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezAlertMessage"
-      },
-      {
-        "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "beezAlertSeverity"
-      }
-    ],
+      "type": "OCTET STRING"
+    }
+  },
+  "testAlertMessage": {
+    "class": "objecttype",
+    "description": "The actual message that describe the type of alert raised or cleared.",
+    "maxaccess": "read-only",
+    "name": "testAlertMessage",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.9",
     "status": "current",
-    "description": "A notification about a change in the alert status of a beez agent."
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
   },
   "testAlertNotification": {
-    "name": "testAlertNotification",
-    "oid": "1.3.6.1.4.1.44523.1.0.2",
     "class": "notificationtype",
+    "description": "A notification about a change in the alert status of a monitoring test.",
+    "name": "testAlertNotification",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
@@ -797,57 +655,211 @@
         "object": "testTargetDisplayName"
       }
     ],
-    "status": "current",
-    "description": "A notification about a change in the alert status of a monitoring test."
+    "oid": "1.3.6.1.4.1.44523.1.0.2",
+    "status": "current"
   },
-  "incidentEventNotification": {
-    "name": "incidentEventNotification",
-    "oid": "1.3.6.1.4.1.44523.1.5.1",
-    "class": "notificationtype",
+  "testAlertSeverity": {
+    "class": "objecttype",
+    "description": "The severity of the test alert being sent.",
+    "maxaccess": "read-only",
+    "name": "testAlertSeverity",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.3",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "testAlertCleared": 6,
+          "testAlertDown": 1,
+          "testAlertPerformance": 4
+        }
+      },
+      "type": "INTEGER"
+    }
+  },
+  "testAlertStatusGroup": {
+    "class": "objectgroup",
+    "description": "A collection of objects providing basic instrumentation and control of an SNMPv2 entity.",
+    "name": "testAlertStatusGroup",
     "objects": [
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentEventID"
+        "object": "testAlertID"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentID"
+        "object": "testType"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentEventMessage"
+        "object": "testAlertSeverity"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentEventTimestamp"
+        "object": "testSourceAlertID"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentSourceObjectType"
+        "object": "testAlertTimestamp"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentSourceObjectID"
+        "object": "testBeezName"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentSourceObjectName"
+        "object": "testBeezID"
       },
       {
         "module": "NETBEEZ-BEEZKEEPER-MIB",
-        "object": "incidentEventType"
+        "object": "testTargetName"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "testAlertMessage"
+      },
+      {
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "testTargetDisplayName"
       }
     ],
-    "status": "current",
-    "description": "A notification about the change of status of an incident. Either triggered or cleared"
+    "oid": "1.3.6.1.4.1.44523.1.2.2",
+    "status": "current"
   },
-  "meta": {
-    "comments": [
-      "ASN.1 source file:///rootfs/beezkeeper/support/submodules/beezkeeper-mib/mib/NETBEEZ-BEEZKEEPER-MIB-v3.3.my",
-      "Produced by pysmi-0.2.2 at Fri Dec  8 19:56:05 2017",
-      "On host 5d2b7565fe07 platform Linux version 3.19.0-25-generic by user nobody",
-      "Using Python version 3.6.3 (default, Dec  4 2017, 16:41:56) "
+  "testAlertTimestamp": {
+    "class": "objecttype",
+    "description": "The UTC time when the alert event occurred, encoded as the 11-octet DateAndTime form (year through UTC offset, with Zulu direction \u0027+\u0027, hours from UTC 0, minutes from UTC 0).",
+    "maxaccess": "read-only",
+    "name": "testAlertTimestamp",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.5",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "DateAndTime"
+    }
+  },
+  "testAlerts": {
+    "class": "objectidentity",
+    "name": "testAlerts",
+    "oid": "1.3.6.1.4.1.44523.1.1.2"
+  },
+  "testBeezID": {
+    "class": "objecttype",
+    "description": "The UUID of the beez that has triggered the alert.",
+    "maxaccess": "read-only",
+    "name": "testBeezID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.7",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "testBeezName": {
+    "class": "objecttype",
+    "description": "The name of the beez that has triggered the alert.",
+    "maxaccess": "read-only",
+    "name": "testBeezName",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.6",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "testSourceAlertID": {
+    "class": "objecttype",
+    "description": "The UUID of the alert event originally raised. For an opening alert event, this is the same as testAlertID.",
+    "maxaccess": "read-only",
+    "name": "testSourceAlertID",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.4",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "testStatusAlertEntry": {
+    "class": "objecttype",
+    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper.",
+    "indices": [
+      {
+        "implied": 0,
+        "module": "NETBEEZ-BEEZKEEPER-MIB",
+        "object": "testAlertID"
+      }
     ],
-    "module": "NETBEEZ-BEEZKEEPER-MIB"
+    "maxaccess": "not-accessible",
+    "name": "testStatusAlertEntry",
+    "nodetype": "row",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1",
+    "status": "current"
+  },
+  "testStatusAlertTable": {
+    "class": "objecttype",
+    "description": "This is the data structure associated to alerts triggered by the NetBeez BeezKeeper.",
+    "maxaccess": "not-accessible",
+    "name": "testStatusAlertTable",
+    "nodetype": "table",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1",
+    "status": "current"
+  },
+  "testTargetDisplayName": {
+    "class": "objecttype",
+    "description": "If applicable, the display name of the destination of the test that has triggered the alert, as it appear on the dashboard.",
+    "maxaccess": "read-only",
+    "name": "testTargetDisplayName",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.10",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "testTargetName": {
+    "class": "objecttype",
+    "description": "If applicable, the name of the destination of the test that has triggered the alert.",
+    "maxaccess": "read-only",
+    "name": "testTargetName",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.8",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "type": "OCTET STRING"
+    }
+  },
+  "testType": {
+    "class": "objecttype",
+    "description": "The ID of the test type being sent.",
+    "maxaccess": "read-only",
+    "name": "testType",
+    "nodetype": "column",
+    "oid": "1.3.6.1.4.1.44523.1.1.2.1.1.2",
+    "status": "current",
+    "syntax": {
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "customCommandTest": 11,
+          "dnsTest": 2,
+          "httpTest": 3,
+          "iperfTest": 5,
+          "networkSpeedTest": 7,
+          "packetCaptureTest": 10,
+          "pathAnalysisTest": 9,
+          "pingTest": 1,
+          "tracerouteTest": 4,
+          "voipTest": 8
+        }
+      },
+      "type": "INTEGER"
+    }
   }
 }
